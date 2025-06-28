@@ -3,10 +3,12 @@ using ServiceCenterOnline.Administrator;
 using ServiceCenterOnline.Manager;
 using ServiceCenterOnline.Master;
 using System;
+using System.Threading.Tasks; // Добавляем для async/await
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using System.Windows.Media.Animation; // Для Storyboard
 
 namespace ServiceCenterOnline.LogReg
 {
@@ -17,10 +19,38 @@ namespace ServiceCenterOnline.LogReg
     {
         string connectionString = DbConnection.ConnectionString;
 
+        // Это свойство будет управлять видимостью анимации загрузки
+        // В реальном приложении лучше использовать ViewModel и INotifyPropertyChanged
+        public bool IsLoading
+        {
+            get { return (bool)GetValue(IsLoadingProperty); }
+            set { SetValue(IsLoadingProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsLoading.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsLoadingProperty =
+            DependencyProperty.Register("IsLoading", typeof(bool), typeof(LoginPage), new PropertyMetadata(false, OnIsLoadingChanged));
+
+        private static void OnIsLoadingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            LoginPage page = (LoginPage)d;
+            if ((bool)e.NewValue)
+            {
+                page.ShowLoading();
+            }
+            else
+            {
+                page.HideLoading();
+            }
+        }
+
         public LoginPage()
         {
             InitializeComponent();
             Loaded += LoginPage_Loaded;
+            // Устанавливаем DataContext для того, чтобы DependencyProperty IsLoading мог работать
+            // и чтобы мы могли получить доступ к элементам UI через XAML (если понадобится)
+            this.DataContext = this;
         }
 
         private void LoginPage_Loaded(object sender, RoutedEventArgs e)
@@ -29,7 +59,7 @@ namespace ServiceCenterOnline.LogReg
             string defaultLanguage = Properties.Settings.Default.DefaultLanguage;
             foreach (ComboBoxItem item in LanguageComboBox.Items)
             {
-                if (item.Tag.ToString() == defaultLanguage)
+                if (item.Tag?.ToString() == defaultLanguage) // Добавил проверку на null для Tag
                 {
                     LanguageComboBox.SelectedItem = item;
                     break;
@@ -40,49 +70,41 @@ namespace ServiceCenterOnline.LogReg
             {
                 LanguageComboBox.SelectedItem = LanguageComboBox.Items[0];
             }
-
-            // Возможно, здесь также нужно подписаться на LanguageChanged, если DGridAdministrator
-            // находится в этом же окне и не обновляется.
-            // LocalizationManager.LanguageChanged += OnLanguageChanged;
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (LanguageComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
-                string cultureCode = selectedItem.Tag.ToString();
+                string cultureCode = selectedItem.Tag?.ToString(); // Добавил проверку на null для Tag
 
-                // Если выбранный язык уже установлен, ничего не делаем
-                if (Properties.Settings.Default.DefaultLanguage == cultureCode)
+                if (string.IsNullOrEmpty(cultureCode) || Properties.Settings.Default.DefaultLanguage == cultureCode)
                 {
                     return;
                 }
 
-                // Изменяем язык через ваш LocalizationManager
                 LocalizationManager.SetLanguage(cultureCode);
-
-                // Сохраняем новый язык по умолчанию
                 Properties.Settings.Default.DefaultLanguage = cultureCode;
-                Properties.Settings.Default.Save(); // Не забудьте сохранить изменения!
+                Properties.Settings.Default.Save();
             }
         }
 
-
         private void checkPass_Checked(object sender, RoutedEventArgs e)
         {
-            ПарольТекст.Text = Пароль.Password; // Копируем пароль из PasswordBox
+            ПарольТекст.Text = Пароль.Password;
             Пароль.Visibility = Visibility.Collapsed;
             ПарольТекст.Visibility = Visibility.Visible;
         }
 
         private void checkPass_Unchecked(object sender, RoutedEventArgs e)
         {
-            Пароль.Password = ПарольТекст.Text; // Копируем обратно
+            Пароль.Password = ПарольТекст.Text;
             ПарольТекст.Visibility = Visibility.Collapsed;
             Пароль.Visibility = Visibility.Visible;
         }
 
-        private void ButLogin_Click(object sender, RoutedEventArgs e)
+        // *** Асинхронный метод для обработки входа в аккаунт ***
+        private async void ButLogin_Click(object sender, RoutedEventArgs e)
         {
             string login = Логин.Text.Trim();
             string password = checkPass.IsChecked == true ? ПарольТекст.Text : Пароль.Password;
@@ -93,77 +115,91 @@ namespace ServiceCenterOnline.LogReg
                 return;
             }
 
+            // *** Начинаем показывать анимацию загрузки ***
+            IsLoading = true;
+
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                await Task.Run(async () => // Выполняем операцию входа в отдельном потоке
                 {
-                    connection.Open();
-                    const string query = @"
-                SELECT p.id_user, p.Id_сервиса, p.Логин, p.Пароль, p.Роль, COALESCE(s.ФИО, '') AS ФИО, s.ID_сотрудника
-                FROM Пользователи p
-                LEFT JOIN Сотрудники s ON p.id_user = s.Id_пользователя
-                WHERE p.Логин = @Login";
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlConnection connection = new MySqlConnection(connectionString))
                     {
-                        command.Parameters.AddWithValue("@Login", login);
-                        using (MySqlDataReader reader = command.ExecuteReader())
+                        await connection.OpenAsync(); // Используем асинхронное открытие соединения
+                        const string query = @"
+                            SELECT p.id_user, p.Id_сервиса, p.Логин, p.Пароль, p.Роль, COALESCE(s.ФИО, '') AS ФИО, s.ID_сотрудника
+                            FROM Пользователи p
+                            LEFT JOIN Сотрудники s ON p.id_user = s.Id_пользователя
+                            WHERE p.Логин = @Login";
+                        using (MySqlCommand command = new MySqlCommand(query, connection))
                         {
-                            if (reader.Read())
+                            command.Parameters.AddWithValue("@Login", login);
+                            using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync()) // Асинхронное чтение
                             {
-                                string storedHashedPassword = reader.GetString("Пароль");
-                                int userId = reader.GetInt32("id_user");
-                                int serviceId = reader.GetInt32("Id_сервиса");
-                                string userRole = reader.GetString("Роль");
-                                string fio = reader.IsDBNull(reader.GetOrdinal("ФИО")) ? string.Empty : reader.GetString("ФИО");
-                                int? employeeId = reader.IsDBNull(reader.GetOrdinal("ID_сотрудника")) ? (int?)null : reader.GetInt32("ID_сотрудника");
-
-                                // Временная проверка пароля (НЕБЕЗОПАСНО, заменить на хеширование)
-                                bool isPasswordValid = (password == storedHashedPassword);
-                                // bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, storedHashedPassword);
-
-                                if (isPasswordValid)
+                                if (reader.Read())
                                 {
-                                    //MessageBox.Show($"Вход выполнен успешно! ФИО: {fio}, ID_сотрудника: {employeeId?.ToString() ?? "NULL"}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                                    string storedHashedPassword = reader.GetString("Пароль");
+                                    int userId = reader.GetInt32("id_user");
+                                    int serviceId = reader.GetInt32("Id_сервиса");
+                                    string userRole = reader.GetString("Роль");
+                                    string fio = reader.IsDBNull(reader.GetOrdinal("ФИО")) ? string.Empty : reader.GetString("ФИО");
+                                    int? employeeId = reader.IsDBNull(reader.GetOrdinal("ID_сотрудника")) ? (int?)null : reader.GetInt32("ID_сотрудника");
 
-                                    // Навигация на основе роли
-                                    Page targetPage = null;
-                                    switch (userRole)
-                                    {
-                                        case "Администратор":
-                                            targetPage = new AdminMainPage(userId, serviceId, fio, userRole);
-                                            break;
-                                        case "Менеджер":
-                                            targetPage = new ManagerMainPage(userId, serviceId, fio, userRole);
-                                            break;
-                                        case "Мастер":
-                                            targetPage = new MainAMasterPage(userId, serviceId, fio, userRole);
-                                            break;
-                                        default:
-                                            MessageBox.Show("Неизвестная роль пользователя. Обратитесь к администратору.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                                            return;
-                                    }
+                                    // Временная проверка пароля (НЕБЕЗОПАСНО, заменить на хеширование)
+                                    bool isPasswordValid = (password == storedHashedPassword);
+                                    // bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, storedHashedPassword);
 
-                                    if (targetPage != null && NavigationService != null)
+                                    if (isPasswordValid)
                                     {
-                                        NavigationService.Navigate(targetPage);
+                                        // Навигация на основе роли
+                                        // Важно: навигация и показ MessageBox должны выполняться в UI-потоке!
+                                        Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            Page targetPage = null;
+                                            switch (userRole)
+                                            {
+                                                case "Администратор":
+                                                    targetPage = new AdminMainPage(userId, serviceId, fio, userRole);
+                                                    break;
+                                                case "Менеджер":
+                                                    targetPage = new ManagerMainPage(userId, serviceId, fio, userRole);
+                                                    break;
+                                                case "Мастер":
+                                                    targetPage = new MainAMasterPage(userId, serviceId, fio, userRole);
+                                                    break;
+                                                default:
+                                                    MessageBox.Show("Неизвестная роль пользователя. Обратитесь к администратору.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                                    return;
+                                            }
+
+                                            if (targetPage != null && NavigationService != null)
+                                            {
+                                                NavigationService.Navigate(targetPage);
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("Не удалось выполнить навигацию. Возможно, NavigationService недоступен.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                            }
+                                        });
                                     }
                                     else
                                     {
-                                        MessageBox.Show("Не удалось выполнить навигацию. Возможно, NavigationService недоступен.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            MessageBox.Show("Неверный логин или пароль.", "Ошибка входа", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        });
                                     }
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Неверный логин или пароль.", "Ошибка входа", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        MessageBox.Show("Неверный логин или пароль.", "Ошибка входа", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    });
                                 }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Неверный логин или пароль.", "Ошибка входа", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
                     }
-                }
+                });
             }
             catch (MySqlException ex)
             {
@@ -172,6 +208,29 @@ namespace ServiceCenterOnline.LogReg
             catch (Exception ex)
             {
                 MessageBox.Show($"Произошла непредвиденная ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // *** Завершаем показывать анимацию загрузки ***
+                IsLoading = false;
+            }
+        }
+
+        // Методы для управления видимостью загрузочного оверлея
+        private void ShowLoading()
+        {
+            if (LoadingOverlay != null)
+            {
+                LoadingOverlay.Visibility = Visibility.Visible;
+                // Анимация для ProgressRing активируется через IsActive="{Binding IsLoading}" в XAML
+            }
+        }
+
+        private void HideLoading()
+        {
+            if (LoadingOverlay != null)
+            {
+                LoadingOverlay.Visibility = Visibility.Collapsed;
             }
         }
 
