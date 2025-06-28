@@ -1,0 +1,106 @@
+﻿<Page x:Class="ServiceCenterOnline.Administrator.AdminMainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ServiceCenterOnline.Administrator" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AdminMainPage">
+
+    <Page.Resources>
+        <Style x:Key="RoundedButtonStyleBorder" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="5,5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2e6da4"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2e6da4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SelectedButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource RoundedButtonStyleBorder}">
+            <Setter Property="Background" Value="#2e6da4"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="White" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+
+
+        <Border Grid.Column="0" Background="#3498db" CornerRadius="0 20 0 0" Padding="10" BorderBrush="#2980b9" BorderThickness="0 0 2 0" Margin="0,30,0,0" VerticalAlignment="Stretch">
+            <DockPanel HorizontalAlignment="Center" LastChildFill="False">
+                <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                    <Border CornerRadius="25" Width="100" Height="100" Background="White" Margin="0,0,0,0">
+                        <Image x:Name="AvatarImage" Stretch="UniformToFill" Width="90" Height="90" Margin="4,5,4,5"/>
+                    </Border>
+                    <TextBlock x:Name="Name" Text="Имя пользователя" FontWeight="Bold" FontSize="16" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                    <TextBlock Text="{DynamicResource PostAdmin}" FontSize="14" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                    <Button x:Name="UsersButton" Style="{StaticResource RoundedButtonStyleBorder}" Margin="0,0,0,10" ToolTip="Заказы" HorizontalAlignment="Stretch" Click="OpenUsersPage">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="ViewList" Margin="0,0,5,0" Width="22" Height="22" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource UserTitle}" FontSize="16" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="PersonaleButton" Style="{StaticResource RoundedButtonStyleBorder}" Margin="0,0,0,10" ToolTip="Клиенты" HorizontalAlignment="Stretch" Click="OpenPersonalePage">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AccountGroup" Margin="0,0,5,0" Width="22" Height="22" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource PersonalTitle}" FontSize="16" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="ServiceButton" Style="{StaticResource RoundedButtonStyleBorder}" Margin="0,0,0,10" ToolTip="Клиенты" HorizontalAlignment="Stretch" Click="OpenServicePage">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Pencil" Margin="0,0,5,0" Width="22" Height="22" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource ServicesTitle}" FontSize="16" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="ClientButton" Style="{StaticResource RoundedButtonStyleBorder}" Margin="0,0,0,10" ToolTip="Клиенты" HorizontalAlignment="Stretch" Click="OpenClientPage">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AccountMultipleCheckOutline" Margin="0,0,5,0" Width="22" Height="22" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource ClientTitle}" FontSize="16" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="StorageButton" Style="{StaticResource RoundedButtonStyleBorder}" Margin="0,0,0,10" ToolTip="Клиенты" HorizontalAlignment="Stretch" Click="OpenStoragePage">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Warehouse" Margin="0,0,5,0" Width="22" Height="22" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource StorageTitle}" FontSize="16" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="SettingsButton" Style="{StaticResource RoundedButtonStyleBorder}" Margin="0,0,0,10" ToolTip="Настройки" HorizontalAlignment="Stretch" Click="OpenSettingsPage">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Settings" Margin="0,0,5,0" Width="22" Height="22" Foreground="White"/>
+                            <TextBlock Text="{DynamicResource SettingsTitle}" FontSize="16" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Button x:Name="ExitButton" DockPanel.Dock="Bottom" Style="{StaticResource RoundedButtonStyleBorder}" Margin="0,10,0,10" ToolTip="Выход" HorizontalAlignment="Stretch" Click="ExitApp">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <materialDesign:PackIcon Kind="ExitToApp" Margin="0,0,5,0" Width="22" Height="22" Foreground="White"/>
+                        <TextBlock Text="{DynamicResource ExitBtn}" FontSize="16" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+            </DockPanel>
+        </Border>
+        <Frame Name="AdminFrame" Grid.Column="1" NavigationUIVisibility="Hidden"/>
+    </Grid>
+</Page>

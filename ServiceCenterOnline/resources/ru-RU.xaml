@@ -1,0 +1,137 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="SettingsTitle">Настройки</sys:String>
+    <sys:String x:Key="ExitBtn">Выйти</sys:String>
+    <sys:String x:Key="ThemeSection">Тема приложения</sys:String>
+    <sys:String x:Key="SelectTheme">Выберите тему:</sys:String>
+    <sys:String x:Key="LanguageSection">Язык приложения</sys:String>
+    <sys:String x:Key="SelectLanguage">Выберите язык:</sys:String>
+    <sys:String x:Key="PasswordSection">Изменить пароль</sys:String>
+    <sys:String x:Key="CurrentPassword">Текущий пароль</sys:String>
+    <sys:String x:Key="NewPassword">Новый пароль</sys:String>
+    <sys:String x:Key="ConfirmNewPassword">Подтвердите новый пароль</sys:String>
+    <sys:String x:Key="ShowPassword">Показать</sys:String>
+    <sys:String x:Key="SavePassword">Сохранить пароль</sys:String>
+    <sys:String x:Key="SaveSettings">Сохранить настройки</sys:String>
+    <sys:String x:Key="OrderTitle">Заказы</sys:String>
+    <sys:String x:Key="SearchBox">Поиск:</sys:String>
+    <sys:String x:Key="btnAddOrder">Добавить заказ</sys:String>
+    <sys:String x:Key="btnAddClient">Добавить клиента</sys:String>
+    <sys:String x:Key="ClientTitle">Клиенты</sys:String>
+    <sys:String x:Key="CurrentOrder">Текущие заказы</sys:String>
+    <sys:String x:Key="HistoryOrder">История заказов</sys:String>
+    <sys:String x:Key="UserTitle">Пользователи</sys:String>
+    <sys:String x:Key="btnAddUser">Зарегистрировать</sys:String>
+    <sys:String x:Key="PersonalTitle">Персонал</sys:String>
+    <sys:String x:Key="ServicesTitle">Услуги</sys:String>
+    <sys:String x:Key="StorageTitle">Склад</sys:String>
+    <sys:String x:Key="btnAdd">Добавить</sys:String>
+    <sys:String x:Key="PostAdmin">Администратор</sys:String>
+    <sys:String x:Key="PostManager">Менеджер</sys:String>
+    <sys:String x:Key="PostMaster">Мастер</sys:String>
+
+    <sys:String x:Key="LanguageLabel">Язык:</sys:String>
+    <sys:String x:Key="RussianLanguage">Русский</sys:String>
+    <sys:String x:Key="EnglishLanguage">English</sys:String>
+    <sys:String x:Key="UkrainLanguage">Український</sys:String>
+
+    <!-- Вход -->
+
+    <sys:String x:Key="LoginPageTitle">Авторизация</sys:String>
+    <sys:String x:Key="LoginTitle">Логин</sys:String>
+    <sys:String x:Key="PasswordTitle">Пароль</sys:String>
+    <sys:String x:Key="cbShowPass">Показать пароль</sys:String>
+    <sys:String x:Key="btnLogin">Войти</sys:String>
+    <sys:String x:Key="btnRegister1">Нету аккаунта?</sys:String>
+    <sys:String x:Key="btnRegister2">Зарегистрироваться</sys:String>
+    
+    
+    <!-- DGПользоватли -->
+    <sys:String x:Key="DGLogin">Логин</sys:String>
+    <sys:String x:Key="DGPassword">Пароль</sys:String>
+    <sys:String x:Key="DGRole">Должность</sys:String>
+    <sys:String x:Key="DGFIO">ФИО</sys:String>
+
+    <!-- DGПерсонал -->
+    <sys:String x:Key="DGPhoneNumber">Телефон</sys:String>
+    <sys:String x:Key="DGDateOfHiring">Дата найма</sys:String>
+    <sys:String x:Key="DGSalary">Зарплата</sys:String>
+    <sys:String x:Key="DGPrice">Цена</sys:String>
+    
+    <!-- DGУслуги -->
+    <sys:String x:Key="DGName">Название</sys:String>
+    <sys:String x:Key="DGDescription">Описание</sys:String>
+    <sys:String x:Key="DGCoast">Стоимость</sys:String>
+    
+    <!-- DGКлиенты -->
+    <sys:String x:Key="DGTypeClient">Тип клиента</sys:String>
+    <sys:String x:Key="DGEmail">Почта</sys:String>
+    <sys:String x:Key="DGAddress">Адрес</sys:String>
+    <sys:String x:Key="DGNameCompany">Название компании</sys:String>
+    <sys:String x:Key="DGINN">ИНН</sys:String>
+    <sys:String x:Key="DGLegalAddress">Юридический адрес</sys:String>
+    <sys:String x:Key="DGDirector">Директор</sys:String>
+
+    <!-- DGСклад -->
+    <sys:String x:Key="DGImage">Изображение</sys:String>
+    <sys:String x:Key="DGQuantity">Количество</sys:String>
+    <sys:String x:Key="DGDateOfReceipt">Дата поступления</sys:String>
+    <sys:String x:Key="DGLocation">Местоположение</sys:String>
+
+    <!-- DGЗаказы-->
+    <sys:String x:Key="DGStatusOrder">Статус</sys:String>
+    <sys:String x:Key="DGTypeService">Тип услуги</sys:String>
+    <sys:String x:Key="DGDateOrder">Дата заказа</sys:String>
+    
+    <!-- Кнопки -->
+
+    <sys:String x:Key="btnAddEditPage">Добавить</sys:String>
+    <sys:String x:Key="btnCancel">Отмена</sys:String>
+    <sys:String x:Key="btnReview">Обзор</sys:String>
+
+    <sys:String x:Key="DGActions">Действия</sys:String>
+
+    <sys:String x:Key="GeneralInfoTitle">Общая информация</sys:String>
+    <sys:String x:Key="ProductInfoTitle">Изделие</sys:String>
+    <sys:String x:Key="OrderDetailsTitle">Детали заказа</sys:String>
+
+    <sys:String x:Key="LabelGroup">Группа:</sys:String>
+    <sys:String x:Key="LabelBrand">Бренд:</sys:String>
+    <sys:String x:Key="LabelModel">Модель:</sys:String>
+    <sys:String x:Key="LabelSerialNumber">Серийный номер:</sys:String>
+    <sys:String x:Key="LabelMalfunction">Неисправность:</sys:String>
+    <sys:String x:Key="LabelConfiguration">Комплектация:</sys:String>
+    <sys:String x:Key="LabelServiceType">Тип услуги:</sys:String>
+    <sys:String x:Key="LabelImportance">Важность:</sys:String>
+    <sys:String x:Key="ImportanceHigh">Высокая</sys:String>
+    <sys:String x:Key="ImportanceMedium">Средняя</sys:String>
+    <sys:String x:Key="ImportanceLow">Низкая</sys:String>
+    
+    <sys:String x:Key="AddText">Предварительная</sys:String>
+    <sys:String x:Key="ClientText">стоимость</sys:String>
+    
+    <sys:String x:Key="LabelOrderStatus">Статус заказа:</sys:String>
+    <sys:String x:Key="OrderStatusNew">Новый</sys:String>
+    <sys:String x:Key="LabelMaster">Мастер:</sys:String>
+    <sys:String x:Key="SelectClient">Выберите клиента</sys:String>
+    
+    <!-- Регистрации -->
+    <sys:String x:Key="CreateNewServiceTitle">Создание сервиса</sys:String>
+    <sys:String x:Key="CreateNewServiceName">Название сервиса</sys:String>
+    <sys:String x:Key="CreateNewServiceAddress">Адрес (опционально)</sys:String>
+
+    <sys:String x:Key="CreateNewPersonalTitle">Создание сотрудника</sys:String>
+    <sys:String x:Key="CreateNewPersonalFIO">ФИО сотрудника</sys:String>
+    <sys:String x:Key="CreateNewPersonalAddress">Адрес (опционально)</sys:String>
+
+
+    <sys:String x:Key="CreateNewUserTitle">Регистрация пользователя</sys:String>
+    <sys:String x:Key="CreateNewUserLogin">Логин (от 3 символов)</sys:String>
+    <sys:String x:Key="CreateNewUserPass">Пароль (от 6 символов)</sys:String>
+    
+    
+    <sys:String x:Key="btnCreateNewService">Далее</sys:String>
+    <sys:String x:Key="btnCreateNewUser">Завершить</sys:String>
+
+</ResourceDictionary>
